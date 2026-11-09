@@ -43,3 +43,10 @@ Este é um produto amplo. A execução será incremental, com testes em cada mar
 - GitHub/Vercel: repo privado `https://github.com/ivandoplay/ienvia` criado e conectado ao projeto Vercel `ienvia`; arquivos locais de ambiente/segredos foram excluídos do Git. Deploy de produção `dpl_EWL8LuD79Ap8dm3nidH1cv3ZiSbz` concluiu em `READY`, alias verificado `https://ienvia.vercel.app`. Env Vercel contém apenas a URL e chave publishable do Supabase (sem service-role). `web/vercel.json` posiciona funções em São Paulo (`gru1`), perto do banco.
 - Smoke tests online: `/login` HTTP 200; `/inbox` redireciona para autenticação; raiz redireciona para login. `npm run check`, `npm run test:db`, `npm run build` e `npm audit` passaram; zero vulnerabilidades reportadas.
 - Próximas entregas: revisar e validar RLS/PostgREST com usuários/roles reais; conectar a aplicação sem expor service role; histórico paginado de consentimento; depois persistência de rascunhos de campanha sem dispatch até haver confirmação e guardas de elegibilidade.
+
+### Próxima etapa — campanhas autenticadas (rascunho persistente)
+
+- Campanhas agora têm GET/POST/PATCH tenant-scoped com sessão e RLS. Só gravam/alteram drafts; campos de estado de envio e confirmação não são aceitos pelo browser.
+- Tela autenticada lê até 50 campanhas reais, carrega instâncias do workspace e salva conteúdo/finalidade/instâncias selecionadas. IDs de instância são revalidados no backend contra workspace, conexão e habilitação.
+- Sem estimativas fictícias, amostra de contatos, prévia de destinatários ou dispatch. Elegibilidade real por consentimento, prévia exata e envio continuam desligados.
+- Verificação local: `npm run check`, `npm run test:db`, `npm run build`, `npm audit` passaram; zero vulnerabilidades.
