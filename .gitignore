@@ -1,0 +1,16 @@
+# Secrets and local environment files
+.env
+.env.*
+!.env.example
+
+# Generated dependencies and build output
+node_modules/
+.next/
+out/
+dist/
+coverage/
+*.tsbuildinfo
+
+# Local Supabase state
+supabase/.branches/
+supabase/.temp/
