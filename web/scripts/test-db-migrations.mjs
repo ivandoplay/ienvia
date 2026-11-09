@@ -50,7 +50,7 @@ try {
       select nullif(current_setting('request.jwt.claim.sub', true), '')::uuid
     $$;
   `);
-  for (const file of ['0001_core.sql', '0002_consent_campaigns.sql', '0003_workspace_owner_settings.sql']) {
+  for (const file of ['0001_core.sql', '0002_consent_campaigns.sql', '0003_workspace_owner_settings.sql', '0004_platform_master_identity_rpc.sql']) {
     const sql = await fs.readFile(path.join(root, 'supabase', 'migrations', file), 'utf8');
     await db.exec(sql);
     console.log(`✓ migration ${file}`);
@@ -74,7 +74,14 @@ try {
     insert into public.messages(workspace_id,conversation_id,instance_id,provider_message_id,direction,source_engine,actor_type,status,body_text,occurred_at) values
       ('${wsA}','${convA}','${instA}','provider-a1','inbound','evolution','contact','received','Mensagem A',now()),
       ('${wsB}','${convB}','${instB}','provider-b1','inbound','baileys','contact','received','Mensagem B',now());
+    insert into private.platform_admins(user_id) values ('${userA}');
   `);
+
+  const masterStatus = await asUser(userA, async () => (await db.query('select public.is_my_platform_master() as active')).rows[0].active);
+  const regularStatus = await asUser(userB, async () => (await db.query('select public.is_my_platform_master() as active')).rows[0].active);
+  assert.equal(masterStatus,true,'platform master RPC should report only the caller\'s active identity');
+  assert.equal(regularStatus,false,'non-master account should not receive master identity');
+  console.log('✓ authenticated self-only platform-master identity check');
 
   const aCounts = await asUser(userA, async () => {
     const workspaces = await db.query('select id from public.workspaces order by id');

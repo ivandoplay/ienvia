@@ -12,7 +12,9 @@ export default function SettingsPage(){
  const [saving,setSaving]=useState(false);
  const [error,setError]=useState('');
  const [notice,setNotice]=useState('');
+ const [masterIdentity,setMasterIdentity]=useState<'loading'|'active'|'inactive'|'unavailable'>('loading');
  useEffect(()=>{setName(activeWorkspace?.name??'')},[activeWorkspace?.id,activeWorkspace?.name]);
+ useEffect(()=>{let alive=true;fetch('/api/account/access',{cache:'no-store'}).then(async response=>{if(!response.ok)throw new Error('access status unavailable');return await response.json() as {platformMasterIdentityActive:boolean}}).then(data=>{if(alive)setMasterIdentity(data.platformMasterIdentityActive?'active':'inactive')}).catch(()=>{if(alive)setMasterIdentity('unavailable')});return()=>{alive=false}},[]);
  const toast=(value:string)=>{setNotice(value);window.setTimeout(()=>setNotice(''),3500)};
  async function saveWorkspace(e:FormEvent){
   e.preventDefault();setError('');
@@ -61,8 +63,8 @@ export default function SettingsPage(){
     <div className="report-note">Convites e gerenciamento de equipe ainda não estão disponíveis nesta tela.</div>
    </section>
    <section className="surface settings-card">
-    <div className="panel-title">Administrador da plataforma</div><div className="panel-subtitle">Acesso de suporte global é diferente do acesso de proprietário da sua empresa.</div>
-    <div className="policy-note"><strong>Escopo de segurança</strong><span>Você é proprietário do workspace Ienvia. Não concedi acesso Master global, que poderia atravessar workspaces de outros clientes.</span></div>
+    <div className="panel-title">Identidade Master da plataforma</div><div className="panel-subtitle">É separada do papel de proprietário do workspace.</div>
+    <div className="policy-note"><strong>{masterIdentity==='active'?'Identidade Master registrada':masterIdentity==='inactive'?'Sem identidade Master global':masterIdentity==='loading'?'Verificando acesso…':'Não foi possível verificar'}</strong><span>{masterIdentity==='active'?'Sua identidade Master global está registrada. A troca de workspace em modo de suporte, o banner visível e a auditoria completa ainda precisam ser implementados; o acesso operacional atual permanece limitado às memberships ativas.':masterIdentity==='inactive'?'Você continua owner do workspace Ienvia; isso não concede acesso global a outros workspaces.':masterIdentity==='loading'?'Consultando o estado de acesso da sua conta.':'Atualize a página ou tente novamente mais tarde.'}</span></div>
    </section>
   </div>}
   {notice&&<div className="inbox-toast" role="status">ⓘ &nbsp;{notice}</div>}

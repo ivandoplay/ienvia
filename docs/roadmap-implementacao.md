@@ -55,5 +55,6 @@ Este é um produto amplo. A execução será incremental, com testes em cada mar
 
 - A tela de Configurações deixou de exibir valores fictícios de empresa, plano, equipe e privacidade. O owner pode renomear o workspace ativo por endpoint autenticado, protegido por RLS e grant de coluna somente para `workspaces.name`.
 - Nova migration `0003_workspace_owner_settings.sql` aplicada ao projeto Supabase (`workspace_owner_settings`, versão `20261109141126`). PGlite valida rename permitido para owner, negado para operator e bloqueio de alteração de ciclo de vida.
-- A conta inicial continua `owner` do workspace Ienvia. Verificação confirmou que ela **não** está cadastrada em `private.platform_admins`; o privilégio Master global não foi concedido. É separado do owner e precisa de aprovação explícita por seu alcance entre workspaces.
+- A conta inicial continua `owner` do workspace Ienvia. Após confirmação explícita do usuário, sua identidade foi registrada em `private.platform_admins` e auditada. A migration `0004_platform_master_identity_rpc.sql` expõe apenas uma verificação self-only da identidade.
+- A identidade Master, por si só, ainda não inicia sessão de suporte nem amplia consultas RLS: a troca de workspace com banner e auditoria completa por ação continua pendente e precisa ser construída antes de qualquer acesso cross-workspace.
 - Perfil, email, cobrança/plano, políticas de retenção, convites e edição de outros registros ainda precisam de telas/endpoints reais; não devem aparecer como controles que salvam quando ainda não implementados.
