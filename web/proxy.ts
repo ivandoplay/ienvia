@@ -22,7 +22,8 @@ export async function proxy(request: NextRequest) {
 
   const { data: { user }, error } = await supabase.auth.getUser();
   const isLogin = request.nextUrl.pathname === '/login';
-  if ((!user || error) && !isLogin) {
+  const isAuthCallback = request.nextUrl.pathname === '/auth/callback';
+  if ((!user || error) && !isLogin && !isAuthCallback) {
     const target = request.nextUrl.clone();
     target.pathname = '/login';
     target.searchParams.set('next', request.nextUrl.pathname);
