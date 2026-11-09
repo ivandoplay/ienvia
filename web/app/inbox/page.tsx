@@ -20,15 +20,15 @@ const initials=(name:string)=>name.split(/\s+/).slice(0,2).map(x=>x[0]).join('')
 
 export default function InboxPage() {
   const {activeWorkspaceId,demo,loading:workspaceLoading}=useWorkspace();
-  const [conversations, setConversations] = useState<Conversation[]>(seed);
-  const [selectedId, setSelectedId] = useState<string|number>(1);
+  const [conversations, setConversations] = useState<Conversation[]>(demo?seed:[]);
+  const [selectedId, setSelectedId] = useState<string|number>(demo?1:'');
   const [filter, setFilter] = useState<'all'|Stage>('all');
   const [query, setQuery] = useState('');
   const [draft, setDraft] = useState('');
   const [notice, setNotice] = useState('');
   const [mobilePane, setMobilePane] = useState<'list'|'chat'>('list');
-  const [backendMode,setBackendMode]=useState(false);
-  const [dataLoading,setDataLoading]=useState(false);
+  const [backendMode,setBackendMode]=useState(!demo);
+  const [dataLoading,setDataLoading]=useState(!demo);
   const [dataError,setDataError]=useState('');
   const selected = conversations.find(c => c.id === selectedId) ?? null;
   const filtered = useMemo(() => conversations.filter(c => (filter === 'all' || c.stage === filter) && `${c.name} ${c.preview} ${c.channel}`.toLocaleLowerCase('pt-BR').includes(query.toLocaleLowerCase('pt-BR'))), [conversations, filter, query]);

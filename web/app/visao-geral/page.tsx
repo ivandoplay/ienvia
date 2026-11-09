@@ -1,11 +1,32 @@
-import { MetricCard } from '@/components/module-page';
+import Link from 'next/link';
 
 export default function OverviewPage() {
   return <>
-    <div className="page-heading"><div><p className="eyebrow">QUARTA-FEIRA, 5 DE NOVEMBRO</p><h1>Bom dia, Marina ☀️</h1><p className="page-description">Acompanhe o que está acontecendo com seu atendimento.</p></div><button className="secondary-button">◷ &nbsp;Últimos 7 dias⌄</button></div>
-    <section className="metrics-grid"><MetricCard label="Conversas atendidas" value="1.284" change="↗ 12,8% vs. período anterior" tone="green"/><MetricCard label="Tempo médio de resposta" value="2m 18s" change="↘ 8,3% mais rápido" tone="blue"/><MetricCard label="Resolvidas no período" value="936" change="↗ 6,4% vs. período anterior" tone="violet"/><MetricCard label="Aguardando atendimento" value="18" change="5 urgentes precisam de atenção" tone="amber"/></section>
-    <section className="overview-grid"><article className="surface panel"><div className="panel-heading"><div><div className="panel-title">Volume de atendimento</div><div className="panel-subtitle">Conversas recebidas e resolvidas ao longo do tempo</div></div><button className="panel-action">Esta semana⌄</button></div><div className="chart-value">1.284 <small>conversas &nbsp; <span className="positive">↑ 12,8%</span></small></div><svg className="chart-svg" viewBox="0 0 640 180" preserveAspectRatio="none" role="img" aria-label="Gráfico ilustrativo de conversas na semana"><path className="chart-grid" d="M32 20H630M32 60H630M32 100H630M32 140H630"/><text x="0" y="23" fill="#a3adbc" fontSize="9">300</text><text x="0" y="63" fill="#a3adbc" fontSize="9">200</text><text x="0" y="103" fill="#a3adbc" fontSize="9">100</text><text x="9" y="143" fill="#a3adbc" fontSize="9">0</text><path className="chart-path" d="M32 112 C67 101 72 93 108 99 S157 69 192 78 S242 89 278 70 S328 77 363 60 S410 72 448 46 S500 61 534 38 S588 47 630 22"/><path className="chart-path-secondary" d="M32 126 C66 118 80 121 108 113 S159 94 192 101 S245 108 278 91 S331 99 363 82 S412 89 448 72 S501 82 534 65 S593 71 630 53"/></svg><div className="axis"><span>Seg</span><span>Ter</span><span>Qua</span><span>Qui</span><span>Sex</span><span>Sáb</span><span>Dom</span></div><div className="legend"><span><i/>Recebidas</span><span><i className="blue-dot"/>Resolvidas</span></div></article>
-    <article className="surface panel"><div className="panel-heading"><div><div className="panel-title">Precisa de atenção</div><div className="panel-subtitle">Itens que podem precisar da sua equipe</div></div><a className="panel-action" href="/inbox">Ver fila</a></div>{[['◷','amber','Aguardando há mais de 1h','Conversas sem resposta','8'],['▤','blue','Esperando atendente','Transferidas pela IA','5'],['!','red','Falha de envio','Verifique a conexão','3'],['⌁','green','Instâncias conectadas','3 de 5 disponíveis','3 / 5']].map(([icon,tone,title,sub,count])=><div className="queue-row" key={title}><span className={`queue-icon ${tone}`}>{icon}</span><span className="queue-copy"><strong>{title}</strong><small>{sub}</small></span><span className="queue-number">{count}</span></div>)}</article></section>
-    <section className="bottom-grid"><article className="surface panel"><div className="panel-heading"><div><div className="panel-title">Conversas recentes</div><div className="panel-subtitle">Atividade mais recente da sua equipe</div></div><a className="panel-action" href="/inbox">Ver todas →</a></div><div className="table-wrap"><table className="data-table"><thead><tr><th>CONTATO</th><th>CANAL</th><th>RESPONSÁVEL</th><th>STATUS</th><th>HORA</th></tr></thead><tbody>{[['CS','Camila Souza','Olá, gostaria de saber mais sobre...','IA • Vendas','Em atendimento','10:42','state-live'],['RL','Rafael Lima','Perfeito, obrigado pelo retorno!','Marina Alves','Resolvida','10:31','state-done'],['AF','Ana Ferreira','Você pode me ajudar com o pedido?','IA • Suporte','Aguardando humano','10:18','state-wait'],['JM','João Mendes','Qual o horário de funcionamento?','IA • Suporte','Em atendimento','09:56','state-live']].map(row=><tr key={row[0]}><td><span className="person"><span className="person-avatar">{row[0]}</span><span><strong>{row[1]}</strong><small>{row[2]}</small></span></span></td><td>◉ WhatsApp</td><td>{row[3]}</td><td><span className={`state-pill ${row[6]}`}>{row[4]}</span></td><td>{row[5]}</td></tr>)}</tbody></table></div></article><article className="surface panel"><div className="panel-heading"><div><div className="panel-title">Atividade recente</div><div className="panel-subtitle">Atualizações da operação</div></div><button className="panel-action">Hoje⌄</button></div>{[['✓','Conversa resolvida','por Marina Alves','Rafael Lima • Atendimento','10:31'],['✳','IA transferiu conversa','para atendimento humano','Ana Ferreira • Suporte','10:18'],['⌁','Instância reconectada','','WhatsApp • Número final 4821','09:52'],['♙','12 novos contatos','adicionados à base','Origem: WhatsApp','09:24']].map(x=><div className="activity-row" key={x[0]+x[4]}><span className="activity-symbol">{x[0]}</span><span className="activity-copy"><strong>{x[1]}</strong> {x[2]}<small>{x[3]}</small></span><span className="activity-time">{x[4]}</span></div>)}</article></section>
+    <div className="page-heading">
+      <div>
+        <p className="eyebrow">VISÃO GERAL</p>
+        <h1>Visão geral da sua operação</h1>
+        <p className="page-description">Este painel ainda não consulta métricas operacionais reais.</p>
+      </div>
+    </div>
+
+    <section className="surface module-panel" aria-labelledby="getting-started-title">
+      <div className="panel-heading">
+        <div>
+          <div className="panel-title" id="getting-started-title">Workspace sem dados de demonstração</div>
+          <div className="panel-subtitle">O conteúdo operacional só será exibido quando estiver conectado a dados reais.</div>
+        </div>
+      </div>
+      <div className="module-empty">
+        <div>
+          <strong>Métricas ainda não disponíveis</strong>
+          <span>O resumo e os relatórios reais ainda não foram integrados. Removemos os números fictícios; esta tela não apresenta métricas inventadas como se fossem da sua conta.</span>
+          <div className="page-heading-actions" style={{justifyContent:'center', marginTop:18}}>
+            <Link className="primary-button" href="/canais-instancias">Configurar canais</Link>
+            <Link className="secondary-button" href="/contatos">Ver contatos</Link>
+          </div>
+        </div>
+      </div>
+    </section>
   </>;
 }
