@@ -3,7 +3,18 @@ import type { NextConfig } from 'next';
 const nextConfig: NextConfig = {
   poweredByHeader: false,
   reactStrictMode: true,
-  allowedDevOrigins: ['3000-igwaxpunsg04e1qsphunl.e2b.app'],
 };
+
+export const headers = async () => [
+  {
+    source: '/:path*',
+    headers: [
+      { key: 'X-Content-Type-Options', value: 'nosniff' },
+      { key: 'X-Frame-Options', value: 'DENY' },
+      { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
+      { key: 'Permissions-Policy', value: 'geolocation=(), microphone=(), camera=()' },
+    ],
+  },
+];
 
 export default nextConfig;

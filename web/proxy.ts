@@ -23,7 +23,9 @@ export async function proxy(request: NextRequest) {
   const { data: { user }, error } = await supabase.auth.getUser();
   const isLogin = request.nextUrl.pathname === '/login';
   const isAuthCallback = request.nextUrl.pathname === '/auth/callback';
+  const isApi = request.nextUrl.pathname.startsWith('/api/');
   if ((!user || error) && !isLogin && !isAuthCallback) {
+    if (isApi) return NextResponse.json({ error: 'Autenticação necessária.' }, { status: 401 });
     const target = request.nextUrl.clone();
     target.pathname = '/login';
     target.searchParams.set('next', request.nextUrl.pathname);
