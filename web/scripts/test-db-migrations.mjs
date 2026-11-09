@@ -50,7 +50,7 @@ try {
       select nullif(current_setting('request.jwt.claim.sub', true), '')::uuid
     $$;
   `);
-  for (const file of ['0001_core.sql', '0002_consent_campaigns.sql']) {
+  for (const file of ['0001_core.sql', '0002_consent_campaigns.sql', '0003_workspace_owner_settings.sql']) {
     const sql = await fs.readFile(path.join(root, 'supabase', 'migrations', file), 'utf8');
     await db.exec(sql);
     console.log(`✓ migration ${file}`);
@@ -135,6 +135,21 @@ try {
   });
   assert.equal(operatorPolicyRows.length,0,'operator update is filtered by RLS and must affect zero rows');
   console.log('✓ owner/operator policy boundary');
+
+  const renamedWorkspace = await asUser(userA, async () => {
+    const result = await db.query(`update public.workspaces set name='Workspace A renamed' where id='${wsA}' returning name`);
+    return result.rows[0]?.name;
+  });
+  assert.equal(renamedWorkspace,'Workspace A renamed','owner should be able to rename their workspace');
+  const operatorWorkspaceRows = await asUser(operatorA, async () => {
+    const result = await db.query(`update public.workspaces set name='Operator rename' where id='${wsA}' returning id`);
+    return result.rows;
+  });
+  assert.equal(operatorWorkspaceRows.length,0,'operator must not rename workspace');
+  await asUser(userA, async () => {
+    await expectDenied(() => db.query(`update public.workspaces set status='closed' where id='${wsA}'`), 'owner browser grant must not allow changing lifecycle status');
+  });
+  console.log('✓ owner can rename only own workspace; lifecycle fields remain server-controlled');
 
   await db.exec('begin');
   await expectDenied(() => db.query(`insert into public.messages(workspace_id,conversation_id,instance_id,provider_message_id,direction,source_engine,actor_type,status,body_text,occurred_at) values ('${wsA}','${convA}','${instA}','provider-a1','inbound','evolution','contact','received','duplicate',now())`), 'provider event/message idempotency key must be unique');

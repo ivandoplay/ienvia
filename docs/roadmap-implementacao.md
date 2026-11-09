@@ -50,3 +50,10 @@ Este é um produto amplo. A execução será incremental, com testes em cada mar
 - Tela autenticada lê até 50 campanhas reais, carrega instâncias do workspace e salva conteúdo/finalidade/instâncias selecionadas. IDs de instância são revalidados no backend contra workspace, conexão e habilitação.
 - Sem estimativas fictícias, amostra de contatos, prévia de destinatários ou dispatch. Elegibilidade real por consentimento, prévia exata e envio continuam desligados.
 - Verificação local: `npm run check`, `npm run test:db`, `npm run build`, `npm audit` passaram; zero vulnerabilidades.
+
+### Configurações reais do proprietário (2026-11-05)
+
+- A tela de Configurações deixou de exibir valores fictícios de empresa, plano, equipe e privacidade. O owner pode renomear o workspace ativo por endpoint autenticado, protegido por RLS e grant de coluna somente para `workspaces.name`.
+- Nova migration `0003_workspace_owner_settings.sql` aplicada ao projeto Supabase (`workspace_owner_settings`, versão `20261109141126`). PGlite valida rename permitido para owner, negado para operator e bloqueio de alteração de ciclo de vida.
+- A conta inicial continua `owner` do workspace Ienvia. Verificação confirmou que ela **não** está cadastrada em `private.platform_admins`; o privilégio Master global não foi concedido. É separado do owner e precisa de aprovação explícita por seu alcance entre workspaces.
+- Perfil, email, cobrança/plano, políticas de retenção, convites e edição de outros registros ainda precisam de telas/endpoints reais; não devem aparecer como controles que salvam quando ainda não implementados.
